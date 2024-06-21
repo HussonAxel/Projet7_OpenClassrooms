@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.ts"],"names":[],"mappings":";AAAmF,aAAnF,QAAQ,IAAI","file":"src.d89417ba.js","sourceRoot":"..\\src","sourcesContent":["console.log(\"Hello, TypeScript with Tailwind CSS! This text comes from index.ts !\");\r\n"]}
