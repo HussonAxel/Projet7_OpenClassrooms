@@ -14,7 +14,7 @@ const CSS_CLASSES = {
     recipeIngredientsGridWrapper: "grid grid-cols-2 gap-6 pb-16",
     recipeIngredientName: "font-Manrope text-sm",
     recipeIngredientQuantity: "font-Manrope text-sm text-grey",
-    listDropdownElement: "font-Manrope text-sm cursor-pointer mb-6",
+    listDropdownElement: "font-Manrope text-sm cursor-pointer max-w-48 px-4 py-2 hover:bg-yellow",
 };
 
 function createElementWithClass(tag: string, className: string): HTMLElement {
@@ -48,7 +48,7 @@ function addRecipes() {
         recipeIngredientsTitle.textContent = "Ingrédients";
         recipeIngredients.append(recipeIngredientsTitle, recipeIngredientsGridWrapper);
 
-        for (const { ingredient, quantity, unit } of recipe.ingredients) {
+        for (const {ingredient, quantity, unit} of recipe.ingredients) {
             const recipeIngredientGridItem = document.createElement("div");
             const recipeIngredientName = createElementWithClass("p", CSS_CLASSES.recipeIngredientName);
             const recipeIngredientQuantity = createElementWithClass("p", CSS_CLASSES.recipeIngredientQuantity);
@@ -78,11 +78,6 @@ function fillDropdownMenus() {
         ingredients: document.getElementById("IngredientsWrapper")
     };
 
-    if (!Object.values(wrappers).every(Boolean)) {
-        console.error("Required DOM elements not found");
-        return;
-    }
-
     const sets = {
         appliances: new Set<string>(),
         ustensils: new Set<string>(),
@@ -92,13 +87,13 @@ function fillDropdownMenus() {
     recipes.forEach(recipe => {
         sets.appliances.add(recipe.appliance);
         recipe.ustensils.forEach(ustensil => sets.ustensils.add(ustensil));
-        recipe.ingredients.forEach(({ ingredient }) => sets.ingredients.add(ingredient));
+        recipe.ingredients.forEach(({ingredient}) => sets.ingredients.add(ingredient));
     });
 
     const createAndAppendListItems = (container: HTMLElement, items: Set<string>) => {
         const fragment = document.createDocumentFragment();
         Array.from(items).sort().forEach(item => {
-            const listDropdownElement = createElementWithClass("li", CSS_CLASSES.listDropdownElement);
+            const listDropdownElement = createElementWithClass("option", CSS_CLASSES.listDropdownElement);
             listDropdownElement.textContent = item;
             fragment.appendChild(listDropdownElement);
         });
@@ -121,9 +116,28 @@ function initializeEventListeners() {
     });
 
     dropdownButtons.forEach(dropdownButton => {
-        dropdownButton.addEventListener("click", () => {
-            const dropdownMenu = dropdownButton.nextElementSibling as HTMLElement;
+        dropdownButton.addEventListener("click", (e) => {
+            const dropdownMenu = dropdownButton.querySelector("div");
             dropdownMenu.classList.toggle("hidden");
+            dropdownMenu.classList.toggle("flex");
+            dropdownButton.classList.toggle("rounded-md");
+            console.log(e.currentTarget);
+        });
+
+        const dropdownMenu = dropdownButton.querySelector("div");
+        dropdownMenu.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
+    });
+
+    document.addEventListener("click", (e) => {
+        dropdownButtons.forEach(dropdownButton => {
+            const dropdownMenu = dropdownButton.querySelector("div");
+            if (!dropdownButton.contains(e.target as Node)) {
+                dropdownMenu.classList.add("hidden");
+                dropdownMenu.classList.remove("flex");
+                dropdownButton.classList.remove("rounded-md");
+            }
         });
     });
 }
