@@ -15,11 +15,10 @@
 <body class="m-auto max-w-xl bg-black">
 <header>
     <div class="bg-hero-pattern w-[1440px] h-[667px]">
-        <!--        <img src="./assets/logo.svg" alt="LES PETITS PLATS" class="p-16"/>-->
         <div class="m-auto max-w-4xl text-center h-full content-center">
             <h1 class="text-yellow uppercase font-Anton text-[44px] text-balance">
                 Cherchez parmi plus de 1500 recettes du quotidien, simples et
-                délicieusess
+                délicieuses
             </h1>
             <div class="max-w-4xl flex py-2 bg-white rounded-md m-auto justify-between mt-8">
                 <input type="text" id="searchRecipe" name="searchRecipe"
@@ -49,41 +48,72 @@
 </header>
 <main id="main" class="bg-backgroundWhite pb-52">
     <div class="w-[1220px] m-auto">
-        <section class="flex flex-row gap-16 items-center justify-between pt-5 mb-14">
+        <section class="flex flex-row gap-16 items-center justify-between pt-5 mb-8">
             <div class="flex flex-row gap-16 items-center">
+                <!-- Ingrédients -->
                 <div class="w-48 h-14 bg-white rounded-md flex justify-between items-center px-4 relative dropdownButton">
-                    <p>Ustensiles</p>
-                    <img src="./assets/Vector 1.svg" alt="open dropdown"
-                         class="w-3.5 h-3.5 cursor-pointer"/>
-                    <div
-                            class="absolute left-0 top-full w-full bg-white shadow-lg hidden z-10 max-h-80 overflow-auto flex-col rounded-b-md">
-                        <input class="border-solid border-2 border-sky-500 max-w-40 w-full self-center my-2"/>
+                    <p>Ingrédients</p>
+                    <img src="./assets/Vector 1.svg" alt="open dropdown" class="w-3.5 h-3.5 cursor-pointer"/>
+                    <div class="absolute left-0 top-full w-full bg-white shadow-lg hidden z-10 max-h-80 overflow-auto flex-col rounded-b-md">
+                        <div class="flex items-center border-solid border border-grey max-w-40 w-full self-center my-2 relative">
+                            <input class=" dropdownInput w-full focus:outline-none pl-2 pr-8 py-2" placeholder=""
+                                   data-category="Ingredients"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 text-grey absolute right-8 cursor-pointer hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-grey absolute right-2 cursor-pointer"
+                                 viewBox="0 0 20 20" fill="gray">
+                                <path fill-rule="evenodd"
+                                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                        </div>
                         <ul id="IngredientsWrapper">
                         </ul>
                     </div>
                 </div>
+
+                <!-- Appareils -->
                 <div class="w-48 h-14 bg-white rounded-md flex justify-between items-center px-4 relative dropdownButton">
-                    <p>Ustensiles</p>
-                    <img src="./assets/Vector 1.svg" alt="open dropdown"
-                         class="w-3.5 h-3.5 cursor-pointer"/>
-                    <div
-                            class="absolute left-0 top-full w-full bg-white shadow-lg hidden z-10 max-h-80 overflow-auto flex-col rounded-b-md">
-                        <input class="border-solid border-2 border-sky-500 max-w-40 w-full self-center my-2 bg-[url('./assets/close.svg')] "/>
-                        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 11.5L7 6.5M7 6.5L2 1.5M7 6.5L12 1.5M7 6.5L2 11.5" stroke="#1B1B1B"
-                                  stroke-width="2.16667" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                    <p>Appareils</p>
+                    <img src="./assets/Vector 1.svg" alt="open dropdown" class="w-3.5 h-3.5 cursor-pointer"/>
+                    <div class="absolute left-0 top-full w-full bg-white shadow-lg hidden z-10 max-h-80 overflow-auto flex-col rounded-b-md">
+                        <div class="flex items-center border-solid border border-grey max-w-40 w-full self-center my-2 relative">
+                            <input class=" dropdownInput w-full focus:outline-none pl-2 pr-8 py-2" placeholder=""
+                                   data-category="Appliances"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 text-grey absolute right-8 cursor-pointer hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-grey absolute right-2 cursor-pointer"
+                                 viewBox="0 0 20 20" fill="gray">
+                                <path fill-rule="evenodd"
+                                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                        </div>
                         <ul id="AppliancesWrapper">
                         </ul>
                     </div>
                 </div>
+
+                <!-- Ustensiles -->
                 <div class="w-48 h-14 bg-white rounded-md flex justify-between items-center px-4 relative dropdownButton">
                     <p>Ustensiles</p>
-                    <img src="./assets/Vector 1.svg" alt="open dropdown"
-                         class="w-3.5 h-3.5 cursor-pointer"/>
-                    <div
-                            class="absolute left-0 top-full w-full bg-white shadow-lg hidden z-10 max-h-80 overflow-auto flex-col rounded-b-md">
-                        <input class="border-solid border-2 border-sky-500 max-w-40 w-full self-center my-2"/>
+                    <img src="./assets/Vector 1.svg" alt="open dropdown" class="w-3.5 h-3.5 cursor-pointer"/>
+                    <div class="absolute left-0 top-full w-full bg-white shadow-lg hidden z-10 max-h-80 overflow-auto flex-col rounded-b-md">
+                        <div class="flex items-center border-solid border border-grey max-w-40 w-full self-center my-2 relative">
+                            <input class="dropdownInput w-full focus:outline-none pl-2 pr-8 py-2" placeholder=""
+                                   data-category="Ustensils"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 text-grey absolute right-8 cursor-pointer hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-grey absolute right-2 cursor-pointer"
+                                 viewBox="0 0 20 20" fill="gray">
+                                <path fill-rule="evenodd"
+                                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                        </div>
                         <ul id="UstensilsWrapper">
                         </ul>
                     </div>
@@ -93,8 +123,8 @@
                 <p id="recipesCount" class="text-lg font-semibold">50 recettes</p>
             </div>
         </section>
+        <div id="tagsContainer" class="mb-8 flex gap-4"></div>
         <section id="sectionRecipes" class="grid grid-cols-3 gap-12">
-            <!-- Recipe articles will be inserted here dynamically -->
         </section>
     </div>
 </main>
