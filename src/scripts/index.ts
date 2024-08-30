@@ -32,33 +32,80 @@ function createElementWithClass(tag: string, className: string): HTMLElement {
 }
 
 function filterRecipes(recipes: Recipe[]): Recipe[] {
-    return recipes.filter((recipe) => {
-        const searchMatch = Array.from(activeFilters.search).every(term =>
-            recipe.name.toLowerCase().includes(term) ||
-            recipe.description.toLowerCase().includes(term) ||
-            recipe.ingredients.some((ing) =>
-                ing.ingredient.toLowerCase().includes(term)
-            )
-        );
+    const filteredRecipes: Recipe[] = [];
 
-        const ingredientMatch = Array.from(activeFilters.ingredients).every((ing) =>
-            recipe.ingredients.some(
-                (recipeIng) => recipeIng.ingredient.toLowerCase() === ing.toLowerCase()
-            )
-        );
+    for (let i = 0; i < recipes.length; i++) {
+        const recipe = recipes[i];
+        let searchMatch = true;
+        let ingredientMatch = true;
+        let applianceMatch = true;
+        let ustensilMatch = true;
 
-        const applianceMatch =
-            activeFilters.appliances.size === 0 ||
-            activeFilters.appliances.has(recipe.appliance.toLowerCase());
+        // Check search match
+        const searchTerms = Array.from(activeFilters.search);
+        for (let j = 0; j < searchTerms.length; j++) {
+            const term = searchTerms[j];
+            if (!(recipe.name.toLowerCase().includes(term) ||
+                recipe.description.toLowerCase().includes(term))) {
+                let ingredientMatch = false;
+                for (let k = 0; k < recipe.ingredients.length; k++) {
+                    if (recipe.ingredients[k].ingredient.toLowerCase().includes(term)) {
+                        ingredientMatch = true;
+                        break;
+                    }
+                }
+                if (!ingredientMatch) {
+                    searchMatch = false;
+                    break;
+                }
+            }
+        }
 
-        const ustensilMatch = Array.from(activeFilters.ustensils).every((ust) =>
-            recipe.ustensils.some(
-                (recipeUst) => recipeUst.toLowerCase() === ust.toLowerCase()
-            )
-        );
+        // Check ingredient match
+        const ingredientFilters = Array.from(activeFilters.ingredients);
+        for (let j = 0; j < ingredientFilters.length; j++) {
+            const ing = ingredientFilters[j];
+            let found = false;
+            for (let k = 0; k < recipe.ingredients.length; k++) {
+                if (recipe.ingredients[k].ingredient.toLowerCase() === ing.toLowerCase()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                ingredientMatch = false;
+                break;
+            }
+        }
 
-        return searchMatch && ingredientMatch && applianceMatch && ustensilMatch;
-    });
+        // Check appliance match
+        if (activeFilters.appliances.size > 0) {
+            applianceMatch = activeFilters.appliances.has(recipe.appliance.toLowerCase());
+        }
+
+        // Check ustensil match
+        const ustensilFilters = Array.from(activeFilters.ustensils);
+        for (let j = 0; j < ustensilFilters.length; j++) {
+            const ust = ustensilFilters[j];
+            let found = false;
+            for (let k = 0; k < recipe.ustensils.length; k++) {
+                if (recipe.ustensils[k].toLowerCase() === ust.toLowerCase()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                ustensilMatch = false;
+                break;
+            }
+        }
+
+        if (searchMatch && ingredientMatch && applianceMatch && ustensilMatch) {
+            filteredRecipes.push(recipe);
+        }
+    }
+
+    return filteredRecipes;
 }
 
 function updateRecipesDisplay() {
@@ -67,7 +114,8 @@ function updateRecipesDisplay() {
 
     const fragment = document.createDocumentFragment();
 
-    for (const recipe of filteredRecipes) {
+    for (let i = 0; i < filteredRecipes.length; i++) {
+        const recipe = filteredRecipes[i];
         const recipeArticle = createElementWithClass(
             "article",
             ComponentsClasses.recipeArticle
@@ -129,7 +177,8 @@ function createRecipeIngredients(recipe: Recipe): HTMLElement {
         recipeIngredientsGridWrapper
     );
 
-    for (const {ingredient, quantity, unit} of recipe.ingredients) {
+    for (let i = 0; i < recipe.ingredients.length; i++) {
+        const {ingredient, quantity, unit} = recipe.ingredients[i];
         const recipeIngredientGridItem = document.createElement("div");
         const recipeIngredientName = createElementWithClass(
             "p",
@@ -164,13 +213,16 @@ function updateDropdownOptions(filteredRecipes: Recipe[]) {
         ustensils: new Set<string>(),
     };
 
-    filteredRecipes.forEach((recipe) => {
-        recipe.ingredients.forEach((ing) =>
-            options.ingredients.add(ing.ingredient.toLowerCase())
-        );
+    for (let i = 0; i < filteredRecipes.length; i++) {
+        const recipe = filteredRecipes[i];
+        for (let j = 0; j < recipe.ingredients.length; j++) {
+            options.ingredients.add(recipe.ingredients[j].ingredient.toLowerCase());
+        }
         options.appliances.add(recipe.appliance.toLowerCase());
-        recipe.ustensils.forEach((ust) => options.ustensils.add(ust.toLowerCase()));
-    });
+        for (let j = 0; j < recipe.ustensils.length; j++) {
+            options.ustensils.add(recipe.ustensils[j].toLowerCase());
+        }
+    }
 
     updateDropdown("IngredientsWrapper", options.ingredients);
     updateDropdown("AppliancesWrapper", options.appliances);
@@ -181,19 +233,19 @@ function updateDropdown(wrapperId: string, options: Set<string>) {
     const wrapper = document.getElementById(wrapperId);
     if (wrapper) {
         wrapper.innerHTML = "";
-        Array.from(options)
-            .sort()
-            .forEach((item) => {
-                const listDropdownElement = createElementWithClass(
-                    "option",
-                    ComponentsClasses.listDropdownElement
-                );
-                listDropdownElement.textContent = item;
-                listDropdownElement.addEventListener("click", () =>
-                    toggleFilter(wrapperId, item)
-                );
-                wrapper.appendChild(listDropdownElement);
-            });
+        const sortedOptions = Array.from(options).sort();
+        for (let i = 0; i < sortedOptions.length; i++) {
+            const item = sortedOptions[i];
+            const listDropdownElement = createElementWithClass(
+                "option",
+                ComponentsClasses.listDropdownElement
+            );
+            listDropdownElement.textContent = item;
+            listDropdownElement.addEventListener("click", () =>
+                toggleFilter(wrapperId, item)
+            );
+            wrapper.appendChild(listDropdownElement);
+        }
     }
 }
 
@@ -258,13 +310,14 @@ function filterDropdownOptions(category: string, searchTerm: string) {
     const wrapper = document.getElementById(`${category}Wrapper`);
     if (wrapper) {
         const options = Array.from(wrapper.children) as HTMLElement[];
-        options.forEach((option) => {
+        for (let i = 0; i < options.length; i++) {
+            const option = options[i];
             if (option.textContent && option.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
                 option.style.display = "";
             } else {
                 option.style.display = "none";
             }
-        });
+        }
     }
 }
 
@@ -295,7 +348,6 @@ function initializeEventListeners() {
         }
     });
 
-    // Add event listener for 'Enter' key in the search bar
     inputSearchBar.addEventListener("keyup", (event) => {
         if (event.key === "Enter") {
             if (currentSearchTerm.length >= requiredNumberOfCharacters) {
@@ -320,7 +372,8 @@ function initializeEventListeners() {
         updateTagsDisplay();
     });
 
-    dropdownButtons.forEach((dropdownButton) => {
+    for (let i = 0; i < dropdownButtons.length; i++) {
+        const dropdownButton = dropdownButtons[i];
         dropdownButton.addEventListener("click", (e) => {
             const dropdownMenu = dropdownButton.querySelector("div");
             if (dropdownMenu) {
@@ -330,7 +383,6 @@ function initializeEventListeners() {
                 dropdownButton.classList.toggle("rounded-md");
 
                 if (!isOpening) {
-                    // Clear input and hide close button when closing the dropdown
                     const input = dropdownButton.querySelector(".dropdownInput") as HTMLInputElement;
                     if (input) {
                         input.value = "";
@@ -350,17 +402,17 @@ function initializeEventListeners() {
                 e.stopPropagation();
             });
         }
-    });
+    }
 
     document.addEventListener("click", (e) => {
-        dropdownButtons.forEach((dropdownButton) => {
+        for (let i = 0; i < dropdownButtons.length; i++) {
+            const dropdownButton = dropdownButtons[i];
             const dropdownMenu = dropdownButton.querySelector("div");
             if (dropdownMenu && !dropdownButton.contains(e.target as Node)) {
                 dropdownMenu.classList.add("hidden");
                 dropdownMenu.classList.remove("flex");
                 dropdownButton.classList.remove("rounded-md");
 
-                // Clear input and hide close button when closing the dropdown
                 const input = dropdownButton.querySelector(".dropdownInput") as HTMLInputElement;
                 if (input) {
                     input.value = "";
@@ -371,12 +423,12 @@ function initializeEventListeners() {
                     }
                 }
             }
-        });
+        }
     });
 
-    // Add event listeners for filter search inputs
     const filterInputs = document.querySelectorAll(".dropdownInput");
-    filterInputs.forEach((input) => {
+    for (let i = 0; i < filterInputs.length; i++) {
+        const input = filterInputs[i] as HTMLInputElement;
         input.addEventListener("input", (e) => {
             const target = e.target as HTMLInputElement;
             const category = target.getAttribute("data-category");
@@ -399,15 +451,15 @@ function initializeEventListeners() {
         const closeButton = input.parentElement?.querySelector('svg');
         if (closeButton) {
             closeButton.addEventListener('click', () => {
-                (input as HTMLInputElement).value = '';
-                toggleCloseButton(input as HTMLInputElement, false);
+                input.value = '';
+                toggleCloseButton(input, false);
                 const category = input.getAttribute("data-category");
                 if (category) {
                     filterDropdownOptions(category, "");
                 }
             });
         }
-    });
+    }
 }
 
 function fillDropdownMenus() {
@@ -423,10 +475,11 @@ function clearAllInputs() {
 
     // Clear filter dropdown inputs and hide close buttons
     const filterInputs = document.querySelectorAll(".dropdownInput") as NodeListOf<HTMLInputElement>;
-    filterInputs.forEach((input) => {
+    for (let i = 0; i < filterInputs.length; i++) {
+        const input = filterInputs[i];
         input.value = "";
         toggleCloseButton(input, false);
-    });
+    }
 
     // Reset currentSearchTerm
     currentSearchTerm = "";
