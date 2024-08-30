@@ -8,16 +8,19 @@ const sectionRecipes = document.getElementById("sectionRecipes") as HTMLElement,
         "searchRecipe"
     ) as HTMLInputElement,
     dropdownButtons = document.querySelectorAll(".dropdownButton"),
-    resetButton = document.getElementById("reset") as HTMLDivElement;
+    resetButton = document.getElementById("reset") as HTMLDivElement,
+    requiredNumberOfCharacters = 3
 
 let activeFilters: {
     ingredients: Set<string>;
     appliances: Set<string>;
     ustensils: Set<string>;
+    search: Set<string>;
 } = {
     ingredients: new Set(),
     appliances: new Set(),
     ustensils: new Set(),
+    search: new Set()
 };
 
 let currentSearchTerm = "";
@@ -30,14 +33,13 @@ function createElementWithClass(tag: string, className: string): HTMLElement {
 
 function filterRecipes(recipes: Recipe[]): Recipe[] {
     return recipes.filter((recipe) => {
-        const searchMatch =
-            currentSearchTerm.length < 3 ||
-            (currentSearchTerm.length >= 3 &&
-                (recipe.name.toLowerCase().includes(currentSearchTerm) ||
-                    recipe.description.toLowerCase().includes(currentSearchTerm) ||
-                    recipe.ingredients.some((ing) =>
-                        ing.ingredient.toLowerCase().includes(currentSearchTerm)
-                    )));
+        const searchMatch = Array.from(activeFilters.search).every(term =>
+            recipe.name.toLowerCase().includes(term) ||
+            recipe.description.toLowerCase().includes(term) ||
+            recipe.ingredients.some((ing) =>
+                ing.ingredient.toLowerCase().includes(term)
+            )
+        );
 
         const ingredientMatch = Array.from(activeFilters.ingredients).every((ing) =>
             recipe.ingredients.some(
@@ -92,8 +94,18 @@ function updateRecipesDisplay() {
     sectionRecipes.appendChild(fragment);
 
     const recipesCountElement = document.getElementById("recipesCount");
+    const noResults = document.getElementById("noResults")
     if (recipesCountElement) {
-        recipesCountElement.textContent = `${filteredRecipes.length} recettes`;
+        if (filteredRecipes.length) {
+            recipesCountElement.textContent = `${filteredRecipes.length} recettes`;
+            noResults.classList.add("hidden")
+        } else {
+            recipesCountElement.textContent = `${filteredRecipes.length} recette`;
+            noResults.textContent = `Aucune recette ne contient '${Array.from(activeFilters.search).join(", ")}', vous pouvez chercher «
+tarte aux pommes », « poisson », etc`;
+            noResults.classList.remove("hidden")
+            noResults.classList.add("font-Manrope", "text-black", "text-center");
+        }
     }
 
     updateDropdownOptions(filteredRecipes);
@@ -233,6 +245,12 @@ function createTag(category: string, value: string): HTMLElement {
     removeButton.className = "ml-2 font-bold";
     removeButton.addEventListener("click", () => removeTag(category, value));
     tag.appendChild(removeButton);
+
+    // Add a specific class for search tags
+    if (category === "search") {
+        tag.classList.add("search-tag");
+    }
+
     return tag;
 }
 
@@ -250,6 +268,17 @@ function filterDropdownOptions(category: string, searchTerm: string) {
     }
 }
 
+function toggleCloseButton(input: HTMLInputElement, show: boolean) {
+    const closeButton = input.parentElement?.querySelector('svg') as HTMLElement;
+    if (closeButton) {
+        if (show) {
+            closeButton.classList.remove('hidden');
+        } else {
+            closeButton.classList.add('hidden');
+        }
+    }
+}
+
 function initializeEventListeners() {
     inputSearchBar.addEventListener("input", () => {
         const searchButton = document.getElementById("search");
@@ -257,10 +286,23 @@ function initializeEventListeners() {
         resetButton.classList.toggle("hidden", !currentSearchTerm);
         if (searchButton) {
             searchButton.addEventListener("click", event => {
-                if (currentSearchTerm.length >= 3 || currentSearchTerm.length === 0) {
-                    updateRecipesDisplay();
+                if (currentSearchTerm.length >= requiredNumberOfCharacters) {
+                    addTag("search", currentSearchTerm);
+                    inputSearchBar.value = "";  // Clear the search bar after adding the tag
+                    currentSearchTerm = "";
                 }
             });
+        }
+    });
+
+    // Add event listener for 'Enter' key in the search bar
+    inputSearchBar.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+            if (currentSearchTerm.length >= requiredNumberOfCharacters) {
+                addTag("search", currentSearchTerm);
+                inputSearchBar.value = "";  // Clear the search bar after adding the tag
+                currentSearchTerm = "";
+            }
         }
     });
 
@@ -272,6 +314,7 @@ function initializeEventListeners() {
             ingredients: new Set(),
             appliances: new Set(),
             ustensils: new Set(),
+            search: new Set()
         };
         updateRecipesDisplay();
         updateTagsDisplay();
@@ -281,9 +324,23 @@ function initializeEventListeners() {
         dropdownButton.addEventListener("click", (e) => {
             const dropdownMenu = dropdownButton.querySelector("div");
             if (dropdownMenu) {
+                const isOpening = dropdownMenu.classList.contains("hidden");
                 dropdownMenu.classList.toggle("hidden");
                 dropdownMenu.classList.toggle("flex");
                 dropdownButton.classList.toggle("rounded-md");
+
+                if (!isOpening) {
+                    // Clear input and hide close button when closing the dropdown
+                    const input = dropdownButton.querySelector(".dropdownInput") as HTMLInputElement;
+                    if (input) {
+                        input.value = "";
+                        toggleCloseButton(input, false);
+                        const category = input.getAttribute("data-category");
+                        if (category) {
+                            filterDropdownOptions(category, "");
+                        }
+                    }
+                }
             }
         });
 
@@ -302,6 +359,17 @@ function initializeEventListeners() {
                 dropdownMenu.classList.add("hidden");
                 dropdownMenu.classList.remove("flex");
                 dropdownButton.classList.remove("rounded-md");
+
+                // Clear input and hide close button when closing the dropdown
+                const input = dropdownButton.querySelector(".dropdownInput") as HTMLInputElement;
+                if (input) {
+                    input.value = "";
+                    toggleCloseButton(input, false);
+                    const category = input.getAttribute("data-category");
+                    if (category) {
+                        filterDropdownOptions(category, "");
+                    }
+                }
             }
         });
     });
@@ -314,23 +382,73 @@ function initializeEventListeners() {
             const category = target.getAttribute("data-category");
             const searchTerm = target.value.trim();
 
+            // Toggle close button visibility
+            toggleCloseButton(target, searchTerm.length > 0);
+
             if (category) {
-                if (searchTerm.length >= 3) {
+                if (searchTerm.length >= requiredNumberOfCharacters) {
                     filterDropdownOptions(category, searchTerm);
                 } else {
-                    // Reset the filter if less than 3 characters
+                    // Reset the filter if less than required characters
                     filterDropdownOptions(category, "");
                 }
             }
         });
+
+        // Add click event listener for the close button
+        const closeButton = input.parentElement?.querySelector('svg');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                (input as HTMLInputElement).value = '';
+                toggleCloseButton(input as HTMLInputElement, false);
+                const category = input.getAttribute("data-category");
+                if (category) {
+                    filterDropdownOptions(category, "");
+                }
+            });
+        }
     });
 }
 
 function fillDropdownMenus() {
+    // @ts-ignore
     updateDropdownOptions(recipes);
 }
 
+function clearAllInputs() {
+    // Clear main search bar
+    if (inputSearchBar) {
+        inputSearchBar.value = "";
+    }
+
+    // Clear filter dropdown inputs and hide close buttons
+    const filterInputs = document.querySelectorAll(".dropdownInput") as NodeListOf<HTMLInputElement>;
+    filterInputs.forEach((input) => {
+        input.value = "";
+        toggleCloseButton(input, false);
+    });
+
+    // Reset currentSearchTerm
+    currentSearchTerm = "";
+
+    // Hide reset button
+    resetButton.classList.add("hidden");
+
+    // Clear active filters
+    activeFilters = {
+        ingredients: new Set(),
+        appliances: new Set(),
+        ustensils: new Set(),
+        search: new Set()
+    };
+
+    // Update display
+    updateRecipesDisplay();
+    updateTagsDisplay();
+}
+
 function init() {
+    clearAllInputs();  // Clear inputs on initialization
     updateRecipesDisplay();
     fillDropdownMenus();
     initializeEventListeners();

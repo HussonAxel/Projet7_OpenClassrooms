@@ -72,7 +72,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <!-- Appareils -->
                 <div class="w-48 h-14 bg-white rounded-md flex justify-between items-center px-4 relative dropdownButton">
                     <p>Appareils</p>
@@ -120,13 +119,14 @@
                 </div>
             </div>
             <div>
-                <p id="recipesCount" class="text-lg font-semibold">50 recettes</p>
+                <p id="recipesCount" class="text-lg font-semibold"></p>
             </div>
         </section>
         <div id="tagsContainer" class="mb-8 flex gap-4"></div>
         <section id="sectionRecipes" class="grid grid-cols-3 gap-12">
         </section>
     </div>
+    <p id="noResults" class="hidden"></p>
 </main>
 <script src="./scripts/index.ts" type="module"></script>
 </body>

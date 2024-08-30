@@ -6,7 +6,7 @@ const CSS_CLASSES = {
     recipeIngredientQuantity: "font-Manrope text-sm text-grey",
     listDropdownElement:
         "font-Manrope text-sm cursor-pointer max-w-48 px-4 py-2 hover:bg-yellow",
-    tag: "justify-around flex inline-flex items-center bg-yellow rounded p-4 my-4 mr-4 cursor-pointer w-[200px] h-[50px]",
+    tag: "justify-between flex inline-flex items-center bg-yellow rounded p-4 my-4 mr-4 cursor-pointer w-fit h-14 gap-4",
 };
 
 export default CSS_CLASSES;
