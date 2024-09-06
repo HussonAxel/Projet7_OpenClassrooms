@@ -570,12 +570,20 @@ video {
   left: 0px;
 }
 
+.left-80 {
+  left: 20rem;
+}
+
 .right-2 {
   right: 0.5rem;
 }
 
 .right-8 {
   right: 2rem;
+}
+
+.top-16 {
+  top: 4rem;
 }
 
 .top-full {
@@ -763,10 +771,6 @@ video {
   width: 4rem;
 }
 
-.w-52 {
-  width: 13rem;
-}
-
 .w-fit {
   width: -moz-fit-content;
   width: fit-content;
@@ -824,10 +828,6 @@ video {
   justify-content: space-between;
 }
 
-.justify-around {
-  justify-content: space-around;
-}
-
 .gap-12 {
   gap: 3rem;
 }
@@ -842,10 +842,6 @@ video {
 
 .gap-6 {
   gap: 1.5rem;
-}
-
-.gap-2 {
-  gap: 0.5rem;
 }
 
 .self-center {
