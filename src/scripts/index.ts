@@ -62,6 +62,7 @@ function filterRecipes(recipes: Recipe[]): Recipe[] {
 }
 
 function updateRecipesDisplay() {
+    console.log("test")
     const filteredRecipes = filterRecipes(recipes);
     sectionRecipes.innerHTML = "";
 
