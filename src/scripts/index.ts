@@ -270,7 +270,7 @@ function filterDropdownOptions(category: string, searchTerm: string) {
 }
 
 function toggleCloseButton(input: HTMLInputElement, show: boolean) {
-    const closeButton = input.parentElement?.querySelector('svg') as HTMLElement;
+    const closeButton = input.parentElement?.querySelector('svg');
     if (closeButton) {
         if (show) {
             closeButton.classList.remove('hidden');
