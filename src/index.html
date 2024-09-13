@@ -15,7 +15,6 @@
     />
     <title>Les petits plats</title>
     <link rel="stylesheet" href="./output.css" />
-    <script src="./scripts/index.ts" type="module"></script>
   </head>
 
   <body class="m-auto max-w-xl bg-black">
@@ -24,7 +23,7 @@
         <img
           src="./assets/logo.svg"
           alt="LES PETITS PLATS"
-          class="absolute left-80 top-16"
+          class="relative left-16 top-16"
         />
         <div class="m-auto max-w-4xl text-center h-full content-center">
           <h1 class="text-yellow uppercase font-Anton text-[44px] text-balance">
@@ -98,7 +97,7 @@
     </header>
     <main id="main" class="bg-backgroundWhite pb-52">
       <div class="w-[1220px] m-auto">
-        <section
+        <div
           class="flex flex-row gap-16 items-center justify-between pt-5 mb-8"
         >
           <div class="flex flex-row gap-16 items-center">
@@ -108,7 +107,7 @@
             >
               <p>Ingrédients</p>
               <img
-                src="./assets/Vector 1.svg"
+                src="./assets/Vector_1.svg"
                 alt="open dropdown"
                 class="w-3.5 h-3.5 cursor-pointer"
               />
@@ -157,7 +156,7 @@
             >
               <p>Appareils</p>
               <img
-                src="./assets/Vector 1.svg"
+                src="./assets/Vector_1.svg"
                 alt="open dropdown"
                 class="w-3.5 h-3.5 cursor-pointer"
               />
@@ -207,7 +206,7 @@
             >
               <p>Ustensiles</p>
               <img
-                src="./assets/Vector 1.svg"
+                src="./assets/Vector_1.svg"
                 alt="open dropdown"
                 class="w-3.5 h-3.5 cursor-pointer"
               />
@@ -254,13 +253,12 @@
           <div>
             <p id="recipesCount" class="text-lg font-semibold"></p>
           </div>
-        </section>
+        </div>
         <div id="tagsContainer" class="mb-8 flex gap-4"></div>
-        <section id="sectionRecipes" class="grid grid-cols-3 gap-12">
-        
-        </section>
+        <div id="sectionRecipes" class="grid grid-cols-3 gap-12"></div>
       </div>
       <p id="noResults" class="hidden"></p>
     </main>
+    <script src="./scripts/index.ts" type="module"></script>
   </body>
 </html>
