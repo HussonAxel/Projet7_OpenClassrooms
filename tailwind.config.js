@@ -2,7 +2,7 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["./src/**/*.{html,js, ts}"],
+  content: ["./src/**/*.{html,js,ts}"],
   theme: {
     colors: {
       yellow: "#FFD15B",
