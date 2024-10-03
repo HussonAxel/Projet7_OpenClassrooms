@@ -249,7 +249,7 @@ function updateDropdown(wrapperId: string, options: Set<string>) {
     }
 }
 
-function toggleFilter(category: string, value: string) {
+export function toggleFilter(category: string, value: string) {
     const filterCategory = category
         .replace("Wrapper", "")
         .toLowerCase() as keyof typeof activeFilters;
@@ -267,7 +267,7 @@ function addTag(category: string, value: string) {
     updateTagsDisplay();
 }
 
-function removeTag(category: string, value: string) {
+export function removeTag(category: string, value: string) {
     const filterCategory = category.toLowerCase() as keyof typeof activeFilters;
     activeFilters[filterCategory].delete(value.toLowerCase());
     updateRecipesDisplay();
